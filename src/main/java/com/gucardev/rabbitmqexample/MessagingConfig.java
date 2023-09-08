@@ -1,5 +1,6 @@
 package com.gucardev.rabbitmqexample;
 
+import java.util.List;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,29 +12,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MessagingConfig {
-  @Bean(name = Constants.QUEUE)
-  public Queue queue() {
-    return new Queue(Constants.QUEUE);
-  }
-
-  @Bean(name = Constants.QUEUE2)
-  public Queue queue2() {
-    return new Queue(Constants.QUEUE2);
-  }
-
   @Bean
   public TopicExchange exchange() {
     return new TopicExchange(Constants.EXCHANGE);
-  }
-
-  @Bean
-  public Binding binding(@Qualifier(Constants.QUEUE) Queue queue, TopicExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with(Constants.ROUTING_KEY);
-  }
-
-  @Bean
-  public Binding binding2(@Qualifier(Constants.QUEUE2) Queue queue2, TopicExchange exchange) {
-    return BindingBuilder.bind(queue2).to(exchange).with(Constants.ROUTING_KEY2);
   }
 
   @Bean
@@ -46,5 +27,18 @@ public class MessagingConfig {
     final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
     rabbitTemplate.setMessageConverter(converter());
     return rabbitTemplate;
+  }
+
+  @Bean
+  public List<Queue> dynamicQueues() {
+    return List.of(new Queue(Constants.QUEUE), new Queue(Constants.QUEUE2));
+  }
+
+  @Bean
+  public List<Binding> dynamicBindings(
+      @Qualifier("dynamicQueues") List<Queue> queues, TopicExchange exchange) {
+    return List.of(
+        BindingBuilder.bind(queues.get(0)).to(exchange).with(Constants.ROUTING_KEY),
+        BindingBuilder.bind(queues.get(1)).to(exchange).with(Constants.ROUTING_KEY2));
   }
 }
