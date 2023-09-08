@@ -17,7 +17,10 @@ public class Controller {
 
   @GetMapping("/{name}")
   public String bookOrder(@PathVariable String name) {
-    rabbitTemplate.convertAndSend(Constants.EXCHANGE, Constants.INTERNAL_QUEUE_START_PROCESS_ROUTING_KEY, new MyData(name));
+    rabbitTemplate.convertAndSend(
+        Constants.EXCHANGE,
+        Constants.INTERNAL_QUEUE_START_PROCESS_ROUTING_KEY,
+        new MyData("23178dc9-5aa6-492b-8c7e-504ced896412", name));
     return "success!!";
   }
 }
