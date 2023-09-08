@@ -18,10 +18,10 @@ public class ExternalProcessorListener {
 
   @RabbitListener(queues = Constants.EXTERNAL_QUEUE_PROCESSOR_REQUEST)
   public void consumeMessageFromQueue(MyData obj) {
-    log.info("Message Received from external processor queue: {} ", obj);
-    obj.setName(obj.getName() + "_UPDATED");
-    rabbitTemplate.convertAndSend(
-        Constants.EXCHANGE, Constants.INTERNAL_QUEUE_PROCESSOR_RESPONSE_ROUTING_KEY, obj);
+    //  log.info("Message Received from external processor queue: {} ", obj);
+    // obj.setName(obj.getName() + "_UPDATED");
+    // rabbitTemplate.convertAndSend( Constants.EXCHANGE,
+    // Constants.INTERNAL_QUEUE_PROCESSOR_RESPONSE_ROUTING_KEY, obj);
     //    obj.setName(obj.getName() + "_UPDATED");
     //
     //    int randomDelay = 3000 + random.nextInt(3000);
